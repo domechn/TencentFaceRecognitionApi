@@ -60,6 +60,7 @@ func (tAPI TencentAPI) PostByUrl(imageUrl string) string{
 	request.Header.Set("authorization",	encodeString)
 	client := &http.Client{}
 	resp , err := client.Do(request)
+	defer resp.Body.Close()
 	if err != nil {
 		log.Panic(err)
 	}

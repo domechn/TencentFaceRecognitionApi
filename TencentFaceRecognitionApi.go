@@ -1,4 +1,4 @@
-package TencentFaceRecognitionApi
+package TencentApi
 
 import (
 	"log"
@@ -16,7 +16,6 @@ import (
 type TencentAPI struct{
 	appid string
 	mode int
-	imageUrl string
 	sessionId string
 	sessionKey string
 	url string
@@ -30,14 +29,14 @@ type TencentAPI struct{
 * sessionKey
 * url 请求路径
 */
-func (tAPI TencentAPI) PostByUrl() {
+func (tAPI TencentAPI) PostByUrl(imageUrl string) string{
 	t := time.Now()
 	currentUnix := t.Unix()
 	resource := rand.NewSource(currentUnix)
 	sourceRand  := rand.New(resource)
 
 	//json序列化
-	postData := fmt.Sprintf("{\"appid\":\"%s\",\"mode\":%d,\"url\":\"%s\"}",tAPI.appid,tAPI.mode,tAPI.imageUrl)
+	postData := fmt.Sprintf("{\"appid\":\"%s\",\"mode\":%d,\"url\":\"%s\"}",tAPI.appid,tAPI.mode,imageUrl)
 	
 	
 	srcStr:=fmt.Sprintf("a=%s&k=%s&e=%d&t=%d&r=%d&u=0&f=",tAPI.appid,tAPI.sessionId,currentUnix+2400,currentUnix,sourceRand.Intn(999999999))
@@ -68,7 +67,7 @@ func (tAPI TencentAPI) PostByUrl() {
 	if err != nil {
 		log.Panic(err)
 	}
-	fmt.Println(string(respBytes))
+	return string(respBytes)
 }
 
 func bytesCombine(pBytes ...[]byte) []byte{

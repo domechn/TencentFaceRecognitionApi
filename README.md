@@ -8,5 +8,5 @@
 	* sessionKey
 	* url 请求路径
 	*/
-	t := TencentAPI{appid,mode,imageUrl,sessionId,sessionKey,url}
-	t.PostByUrl()
+	t := TencentAPI{appid,mode,sessionId,sessionKey,url}
+	result := t.PostByUrl(imageUrl)

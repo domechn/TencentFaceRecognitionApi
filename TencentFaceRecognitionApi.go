@@ -30,7 +30,7 @@ type TencentAPI struct{
 * sessionKey
 * url 请求路径
 */
-func (tAPI TencentAPI) PostByUrl() { 
+func (tAPI TencentAPI) PostByUrl() {
 	t := time.Now()
 	currentUnix := t.Unix()
 	resource := rand.NewSource(currentUnix)

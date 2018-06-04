@@ -1,6 +1,7 @@
 package TencentFaceRecognitionApi
 
 import (
+	"log"
 	"net/http"
 	"io/ioutil"
 	"fmt"
@@ -12,6 +13,14 @@ import (
 	"encoding/base64"
 )
 
+type TencentAPI struct{
+	appid string
+	mode int
+	imageUrl string
+	sessionId string
+	sessionKey string
+	url string
+}
 /**
 * 通过图片url获取==调用api
 * appid  
@@ -21,20 +30,20 @@ import (
 * sessionKey
 * url 请求路径
 */
-func PostByUrl(appid string,mode int,imageUrl ,sessionId , sessionKey , url string) {
+func (tAPI TencentAPI) PostByUrl() {
 	t := time.Now()
 	currentUnix := t.Unix()
 	resource := rand.NewSource(currentUnix)
 	sourceRand  := rand.New(resource)
 
 	//json序列化
-	postData := fmt.Sprintf("{\"appid\":\"%s\",\"mode\":%d,\"url\":\"%s\"}",appid,mode,imageUrl)
+	postData := fmt.Sprintf("{\"appid\":\"%s\",\"mode\":%d,\"url\":\"%s\"}",tAPI.appid,tAPI.mode,tAPI.imageUrl)
 	
 	
-	srcStr:=fmt.Sprintf("a=%s&k=%s&e=%d&t=%d&r=%d&u=0&f=",appid,sessionId,currentUnix+2400,currentUnix,sourceRand.Intn(999999999))
+	srcStr:=fmt.Sprintf("a=%s&k=%s&e=%d&t=%d&r=%d&u=0&f=",tAPI.appid,tAPI.sessionId,currentUnix+2400,currentUnix,sourceRand.Intn(999999999))
 	
 	
-	key := []byte(sessionKey)
+	key := []byte(tAPI.sessionKey)
 	hashHmac := hashHmac(srcStr,key)
 	result := bytesCombine(hashHmac,[]byte(srcStr))
 	
@@ -43,13 +52,22 @@ func PostByUrl(appid string,mode int,imageUrl ,sessionId , sessionKey , url stri
 	fmt.Println(encodeString)
 	
 	
-	request , _  := http.NewRequest("POST",url,bytes.NewBuffer([]byte(postData)))
+	request , err  := http.NewRequest("POST",tAPI.url,bytes.NewBuffer([]byte(postData)))
+	if err != nil {
+		log.Panic(err)
+	}
 	request.Header.Set("Content-Type","application/json;charset=UTF-8")
 	request.Header.Set("host","recognition.image.myqcloud.com")
 	request.Header.Set("authorization",	encodeString)
 	client := &http.Client{}
-	resp , _ := client.Do(request)
-	respBytes , _ := ioutil.ReadAll(resp.Body)
+	resp , err := client.Do(request)
+	if err != nil {
+		log.Panic(err)
+	}
+	respBytes , err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Panic(err)
+	}
 	fmt.Println(string(respBytes))
 }
 

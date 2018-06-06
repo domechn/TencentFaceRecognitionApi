@@ -66,7 +66,7 @@ func (tAPI TencentAPI) postByFile(filePath string) string{
 	}
 	//json序列化
 	fmt.Println(fileByte)
-	postData := fmt.Sprintf("{\"appid\":\"%s\",\"mode\":%d,\"image\":\"%v\"}",tAPI.Appid,tAPI.Mode,fileByte)
+	postData := fmt.Sprintf("{\"appid\":\"%s\",\"mode\":%d,\"image\":\"%b\"}",tAPI.Appid,tAPI.Mode,fileByte)
 	fmt.Println(postData)
 	
 	encodeString := tAPI.sign()
